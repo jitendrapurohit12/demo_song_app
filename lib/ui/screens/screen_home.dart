@@ -12,20 +12,22 @@ class ScreenHome extends StatefulWidget {
 
 class _ScreenHomeState extends State<ScreenHome> {
   double height;
+  bool _isMobile = false;
 
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
+    _isMobile = userMobileLayout(context);
     return DefaultTabController(
       length: 3,
       child: Scaffold(
         backgroundColor: Theme.of(context).primaryColor,
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(120),
+          preferredSize: Size.fromHeight(_isMobile ? 124 : 124),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              SizedBox(height: 39),
+              SizedBox(height: _isMobile ? 39 : 20),
               ListTile(
                 dense: true,
                 contentPadding: EdgeInsets.all(0),
@@ -45,7 +47,7 @@ class _ScreenHomeState extends State<ScreenHome> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 16.0),
+                padding: EdgeInsets.only(left: _isMobile ? 16.0 : 32),
                 child: TabBar(
                   indicator: UnderlineTabIndicator(
                     borderSide: BorderSide(
@@ -70,13 +72,13 @@ class _ScreenHomeState extends State<ScreenHome> {
             children: <Widget>[
               Container(
                 width: double.infinity,
-                height: height / 3,
+                height: _isMobile ? height / 3 : height / 2,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: AssetImage(imageMarvel), fit: BoxFit.cover),
+                      image: AssetImage(imageCover), fit: BoxFit.cover),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
+                  padding: EdgeInsets.only(left: _isMobile ? 16.0 : 32),
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: Row(
@@ -111,7 +113,7 @@ class _ScreenHomeState extends State<ScreenHome> {
                             color: Colors.black,
                           ),
                         ),
-                        SizedBox(width: 24)
+                        SizedBox(width: _isMobile ? 24 : 48)
                       ],
                     ),
                   ),
@@ -122,29 +124,35 @@ class _ScreenHomeState extends State<ScreenHome> {
             ],
           ),
         ),
-        bottomNavigationBar: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30),
-            color: Colors.white,
-          ),
-          margin: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: bottomList
-                .map(
-                  (e) => Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(e.icon, color: Colors.black54),
-                      SizedBox(height: 4),
-                      Text(e.title, style: bottomBarStyle)
-                    ],
-                  ),
-                )
-                .toList(),
-          ),
-        ),
+        bottomNavigationBar: _isMobile
+            ? Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(_isMobile ? 30 : 60),
+                  color: Colors.white,
+                ),
+                margin: EdgeInsets.symmetric(
+                    horizontal: _isMobile ? 24 : 48,
+                    vertical: _isMobile ? 16 : 32),
+                padding: EdgeInsets.symmetric(
+                    horizontal: _isMobile ? 24 : 48,
+                    vertical: _isMobile ? 8 : 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: bottomList
+                      .map(
+                        (e) => Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(e.icon, color: Colors.black54),
+                            SizedBox(height: _isMobile ? 4 : 8),
+                            Text(e.title, style: bottomBarStyle)
+                          ],
+                        ),
+                      )
+                      .toList(),
+                ),
+              )
+            : Container(width: 0, height: 0),
       ),
     );
   }

@@ -8,13 +8,15 @@ class CustomScrollableChild extends StatelessWidget {
   const CustomScrollableChild({Key key, this.model}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    bool isMobile = userMobileLayout(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: EdgeInsets.symmetric(vertical: isMobile ? 8.0 : 16),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16),
+            padding: EdgeInsets.only(
+                left: isMobile ? 16.0 : 32, right: isMobile ? 16 : 32),
             child: Row(
               children: <Widget>[
                 Text(model.heading, style: scrollableTitleStyle(context)),
@@ -25,7 +27,7 @@ class CustomScrollableChild extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 8),
+          SizedBox(height: isMobile ? 8 : 16),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -33,15 +35,18 @@ class CustomScrollableChild extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(left: i == 0 ? 16.0 : 8),
                   child: Container(
-                    width: 180,
+                    width: isMobile ? 180 : 300,
+                    height: isMobile ? 120 : 180,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.asset(
-                            model.imageList[i].imagePath,
-                            fit: BoxFit.contain,
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.asset(
+                              model.imageList[i].imagePath,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                         SizedBox(height: 4),
@@ -50,8 +55,13 @@ class CustomScrollableChild extends StatelessWidget {
                           children: <Widget>[
                             SizedBox(width: 4),
                             Expanded(
-                                child: Text(model.imageList[i].title,
-                                    style: imageTitleStyle(context))),
+                              child: Text(
+                                model.imageList[i].title,
+                                maxLines: 1,
+                                overflow: TextOverflow.fade,
+                                style: imageTitleStyle(context),
+                              ),
+                            ),
                             Expanded(
                                 child: Text(
                               model.imageList[i].time,
